@@ -1,10 +1,14 @@
-package com.observer.discordWebhookMessage;
+package com.observer.discord;
 
 import java.util.List;
+import java.util.Properties;
+
+import com.observer.util.FileReader;
 
 public class DiscordWebhookMessage {
-  private final String username = "Webhook";
-  private final String avatar_url = "https://i.imgur.com/4M34hi2.png";
+  private final Properties properties = FileReader.read("src/main/resources/discord.properties");
+  private final String username = properties.getProperty("discord.username");
+  private final String avatar_url = properties.getProperty("discord.avatar_url");
   private List<Embed> embeds;
 
   public DiscordWebhookMessage(List<Embed> embeds) {

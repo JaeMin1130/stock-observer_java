@@ -1,11 +1,13 @@
-package com.observer.discordWebhookMessage;
+package com.observer.discord;
 
 import java.util.List;
+
+import com.observer.util.FileReader;
 
 public class Embed {
     private String title;
     private String description;
-    private final String color = "15258703";
+    private final String color = FileReader.read("src/main/resources/discord.properties").getProperty("discord.color");
     private List<Field> fields;
 
     public Embed(String title, String description, List<Field> fields) {

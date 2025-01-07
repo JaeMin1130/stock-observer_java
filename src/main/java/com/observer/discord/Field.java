@@ -1,4 +1,4 @@
-package com.observer.discordWebhookMessage;
+package com.observer.discord;
 
 public class Field {
     private String name;
