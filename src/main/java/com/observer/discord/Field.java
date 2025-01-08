@@ -10,7 +10,7 @@ public class Field {
       this.value = value;
     }
 
-    public String toString() {
+    public String toJson() {
       return String.format("{\"name\":\"%s\", \"value\":\"%s\", \"inline\":%s},", name, value, inline);
     }
 }

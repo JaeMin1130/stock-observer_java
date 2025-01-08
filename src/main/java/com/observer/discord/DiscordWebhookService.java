@@ -10,25 +10,27 @@ import java.util.List;
 import com.observer.stock.StockDto;
 import com.observer.util.FileReader;
 
+import static com.observer.util.FilePath.DISCORD;
+
 public class DiscordWebhookService {
-    public static int sendDiscordWebhookMessage(String title, String description, List<StockDto> stockDtoList) {
+    public static void sendDiscordWebhookMessage(String title, String description, List<StockDto> stockDtoList) {
 
         final HttpClient client = HttpClient.newHttpClient();
-        final String webhookUrl = FileReader.read("src/main/resources/discord.properties").getProperty("discord.url");
+        final String webhookUrl = FileReader.read(DISCORD).getProperty("discord.url");
         final DiscordWebhookMessage message = DiscordWebhookService.createDiscordWebhookMessage(title, description,
                 stockDtoList);
 
         final HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(webhookUrl))
                 .header("Content-Type", "application/json; charset=UTF-8")
-                .POST(HttpRequest.BodyPublishers.ofString(message.toString()))
+                .POST(HttpRequest.BodyPublishers.ofString(message.toJson()))
                 .build();
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.statusCode();
+            System.out.println(
+                    response.statusCode() == 204 ? "\nSucceeded sending a Message" : "\nFailed sending a message");
         } catch (Exception e) {
             e.printStackTrace();
-            return e.hashCode();
         }
     }
 

@@ -5,8 +5,9 @@ import java.util.Properties;
 
 import com.observer.util.FileReader;
 
+import static com.observer.util.FilePath.DISCORD;
 public class DiscordWebhookMessage {
-  private final Properties properties = FileReader.read("src/main/resources/discord.properties");
+  private final Properties properties = FileReader.read(DISCORD);
   private final String username = properties.getProperty("discord.username");
   private final String avatar_url = properties.getProperty("discord.avatar_url");
   private List<Embed> embeds;
@@ -15,11 +16,11 @@ public class DiscordWebhookMessage {
     this.embeds = embeds;
   }
 
-  public String toString(){
+  public String toJson(){
     StringBuilder strBuilder = new StringBuilder();
     strBuilder.append(String.format("{\"username\":\"%s\", \"avatar_url\":\"%s\", \"embeds\": [", username, avatar_url));
     for(Embed embed : embeds){
-      strBuilder.append(embed.toString());
+      strBuilder.append(embed.toJson());
     }
     strBuilder.replace(strBuilder.length()-1, strBuilder.length(), "]}");
     return strBuilder.toString();
