@@ -1,39 +1,34 @@
 package com.observer.stock;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import com.observer.discord.Field;
 
 public class StockDto {
     private final String companyName;
     private final Integer close;
-    private final Double sma;
-    private final Double closeSmaRatio;
-    private final Double dy;
     private final Integer capRank;
     private final Integer tradingVolume;
     private final LocalDate date;
+    private final Map<String, Double> indicatorMap;
 
     public StockDto(Builder builder) {
         this.companyName = builder.companyName;
         this.close = builder.close;
-        this.sma = builder.sma;
-        this.closeSmaRatio = builder.closeSmaRatio;
-        this.dy = builder.dy;
         this.capRank = builder.capRank;
         this.tradingVolume = builder.tradingVolume;
         this.date = builder.date;
+        this.indicatorMap = builder.indicatorMap;
     }
 
     public static class Builder {
         private String companyName;
         private Integer close;
-        private Double sma;
-        private Double closeSmaRatio;
-        private Double dy;
         private Integer capRank;
         private Integer tradingVolume;
         private LocalDate date;
+        private Map<String, Double> indicatorMap;
 
         public Builder companyName(String value) {
             this.companyName = value;
@@ -42,21 +37,6 @@ public class StockDto {
 
         public Builder close(Integer value) {
             this.close = value;
-            return this;
-        }
-
-        public Builder sma(Double value) {
-            this.sma = value;
-            return this;
-        }
-
-        public Builder closeSmaRatio(Double value) {
-            this.closeSmaRatio = value;
-            return this;
-        }
-
-        public Builder dy(Double value) {
-            this.dy = value;
             return this;
         }
 
@@ -75,6 +55,11 @@ public class StockDto {
             return this;
         }
 
+        public Builder indicatorMap(Map<String, Double> indicatorMap) {
+            this.indicatorMap = indicatorMap;
+            return this;
+        }
+
         public StockDto build() {
             return new StockDto(this);
         }
@@ -89,18 +74,6 @@ public class StockDto {
         return close;
     }
 
-    public Double getSma() {
-        return sma;
-    }
-
-    public Double getCloseSmaRatio() {
-        return closeSmaRatio;
-    }
-
-    public Double getDy() {
-        return dy;
-    }
-
     public Integer getCapRank() {
         return capRank;
     }
@@ -113,17 +86,21 @@ public class StockDto {
         return date;
     }
 
+    public Map<String, Double> getIndicatorMap() {
+        return indicatorMap;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "StockDto(companyName: %s, close: %s, sma: %s, closeSmaRatio: %s, dy: %s, capRank: %s, tradingVolume: %s, date: %s)",
-                companyName, sma, close, closeSmaRatio, dy, capRank, tradingVolume, date);
+                "StockDto(companyName: %s, close: %s, capRank: %s, tradingVolume: %s, date: %s, indicatorMap: %s)",
+                companyName, close, capRank, tradingVolume, date, indicatorMap.toString());
     }
 
     public Field toField() {
         return new Field(companyName,
                 String.format(
-                        "close: %,d\\n sma: %,.1f\\n closeSmaRatio: %,.1f%%\\n dy: %,.1f%%\\n capRank: %s\\n tradingVolume: %,d\\n date: %s",
-                        close, sma, closeSmaRatio, dy, capRank, tradingVolume, date));
+                        "close: %,d\\n capRank: %s\\n tradingVolume: %,d\\n date: %s\\n indicators: %s\\n",
+                        close, capRank, tradingVolume, date, indicatorMap.toString()));
     }
 }
