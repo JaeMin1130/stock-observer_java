@@ -4,8 +4,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public interface FileReader {
+public class FileReader {
 
+    private FileReader(){}
+    
     public static Properties read(final String path) {
         final Properties properties = new Properties();
         try (final FileInputStream fis = new FileInputStream(path)) {

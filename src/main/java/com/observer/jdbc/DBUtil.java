@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBUtil {
+    
+    private DBUtil(){}
+
     public static ResultSet readDataPrepared(Connection conn, PreparedStatement ps, int param) {
 
         try {

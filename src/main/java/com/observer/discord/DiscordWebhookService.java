@@ -13,6 +13,8 @@ import com.observer.util.FileReader;
 import static com.observer.util.FilePath.DISCORD;
 
 public class DiscordWebhookService {
+    private DiscordWebhookService() {};
+    
     public static void sendDiscordWebhookMessage(String title, String description, List<StockDto> stockDtoList) {
 
         final HttpClient client = HttpClient.newHttpClient();

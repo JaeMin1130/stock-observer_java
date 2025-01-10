@@ -17,6 +17,9 @@ import com.observer.stock.StockDto;
 import com.observer.util.FileReader;
 
 public class DBService {
+    
+    private DBService() {};
+
     public static List<StockDto> filterStock(String queryName, int param) {
         System.out.printf("\nFiltering starts at %s.\n", LocalTime.now());
 
@@ -26,7 +29,7 @@ public class DBService {
                 final PreparedStatement ps = conn.prepareStatement(query);
                 final ResultSet rs = DBUtil.readDataPrepared(conn, ps, param);) {
             while (rs.next()) {
-                
+
                 int rsColumnCount = rs.getMetaData().getColumnCount();
                 Map<String, Double> indicatorMap = new HashMap<>();
                 for (int i = 1; i <= rsColumnCount; i++) {
@@ -51,7 +54,7 @@ public class DBService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         System.out.printf("Filtering ends at %s.\n", LocalTime.now());
         System.out.printf("\nA number of stocks filtered is %d.\n", stockDtoList.size());
         return stockDtoList;
