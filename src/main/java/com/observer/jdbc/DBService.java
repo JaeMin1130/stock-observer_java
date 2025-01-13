@@ -1,7 +1,6 @@
 package com.observer.jdbc;
 
 import static com.observer.jdbc.DBConnector.connect;
-import static com.observer.util.FilePath.QUERY;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,20 +13,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.observer.stock.StockDto;
-import com.observer.util.FileReader;
 
 public class DBService {
     
     private DBService() {};
 
-    public static List<StockDto> filterStock(String queryName, int param) {
+    public static List<StockDto> filterStock(String query, String[] parameterArray) {
         System.out.printf("\nFiltering starts at %s.\n", LocalTime.now());
 
         final List<StockDto> stockDtoList = new ArrayList<>();
-        final String query = FileReader.read(QUERY).getProperty(queryName);
         try (final Connection conn = connect();
                 final PreparedStatement ps = conn.prepareStatement(query);
-                final ResultSet rs = DBUtil.readDataPrepared(conn, ps, param);) {
+                final ResultSet rs = DBUtil.readDataPrepared(conn, ps, parameterArray);) {
             while (rs.next()) {
 
                 int rsColumnCount = rs.getMetaData().getColumnCount();

@@ -9,11 +9,13 @@ public class DBUtil {
     
     private DBUtil(){}
 
-    public static ResultSet readDataPrepared(Connection conn, PreparedStatement ps, int param) {
+    public static ResultSet readDataPrepared(Connection conn, PreparedStatement ps, String[] parameterArray) {
 
         try {
-            ps.setInt(1, param);
-
+            final int parameterCount = ps.getParameterMetaData().getParameterCount();
+            for(int i = 1; i <= parameterCount; i++){
+                ps.setInt(i, Integer.parseInt(parameterArray[i-1]));
+            }
             final ResultSet rs = ps.executeQuery();
 
             return rs;
