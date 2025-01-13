@@ -18,18 +18,18 @@ public class Main {
         while (true) {
 
             System.out.println("Choose parameters you want to use as a filter");
-            System.out.println("1: DY and MarketCap, 2: TradingValue and SMA20, 3: Exit");
+            System.out.println("1: DividendPayoutRatio and MarketCap, 2: TradingValue and SMA20, 3: Exit");
             final int filterNo = scanner.nextInt();
 
             switch (filterNo) {
                 case 1:
                     System.out.println("You chose Number 1.");
-                    System.out.println("Set a figure of DY(%).");
+                    System.out.println("Set a figure of dividendPayoutRatio(%).");
                     param = scanner.nextInt();
 
                     title = "FilterDY";
-                    description = String.format("Stocks which dy is %s%% over in top300 marketcap", param);
-                    stockDtoList = DBService.filterStock("query.dy", param);
+                    description = String.format("Stocks which dividendPayoutRatio is %s%% under in top500 marketcap", param);
+                    stockDtoList = DBService.filterStock("query.dividendPayoutRatio", param);
                     DiscordWebhookService.sendDiscordWebhookMessage(title, description, stockDtoList);
 
                     continue;
