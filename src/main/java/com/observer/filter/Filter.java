@@ -33,6 +33,10 @@ public class Filter {
         this.parameterArray = parameterArray;
     }
 
+    public void setDescription(String[] parameterArray) {
+
+    }
+
     @Override
     public String toString(){
         return String.format("Filter[query: %s, title: %s, description: %s]", query, title, description);

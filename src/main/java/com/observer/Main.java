@@ -1,6 +1,5 @@
 package com.observer;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -19,8 +18,9 @@ import com.observer.stock.StockDto;
 
 public class Main {
     final static Scanner scanner = new Scanner(System.in);
-    static List<StockDto> stockDtoList;
+    static String[] parameterArray;
     static Filter selectedFilter;
+    static List<StockDto> stockDtoList;
 
     public static void main(String[] args) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -33,7 +33,12 @@ public class Main {
         };
 
         long initialDelay = calculateInitialDelay(16, 30);
-        long period = TimeUnit.DAYS.toSeconds(1); 
+        long period = TimeUnit.DAYS.toSeconds(1);
+
+        scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
+
+        initialDelay = calculateInitialDelay(10, 00);
+        period = TimeUnit.DAYS.toSeconds(1);
 
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
 
@@ -52,12 +57,16 @@ public class Main {
                 case 1:
                     System.out.println("You chose Number 1.");
                     selectedFilter = new FilterDividendPayoutRatio();
-                    askParameter();
+                    parameterArray = askParameter();
+                    selectedFilter.setParameterArray(parameterArray);
+                    selectedFilter.setDescription(parameterArray);
                     break;
                 case 2:
                     System.out.println("You chose Number 2.");
                     selectedFilter = new FilterTradingVolume();
-                    askParameter();
+                    parameterArray = askParameter();
+                    selectedFilter.setParameterArray(parameterArray);
+                    selectedFilter.setDescription(parameterArray);
                     break;
             }
 
@@ -67,16 +76,13 @@ public class Main {
 
     }
 
-    private static void askParameter() {
+    private static String[] askParameter() {
         System.out.printf("A query for filtering stock is '%s'.", selectedFilter.getQuery());
         System.out.println("\n\n");
-        System.out.println("Fill all '?' with a value as you want.");
+        System.out.println("Fill all '?' in order with a value as you want.");
         System.out.println("Please separate each value with '/'.");
 
-        selectedFilter.setParameterArray(scanner.next().split("/"));
-
-        System.out.println("\n\n");
-        System.out.println("Setting parameters were all finished. Filter is now ready.");
+        return scanner.next().split("/");
     }
 
     private static void batchJob(Filter filter) {
@@ -96,6 +102,7 @@ public class Main {
         ZonedDateTime nowZoned = ZonedDateTime.of(now, ZoneId.systemDefault());
         ZonedDateTime nextRunZoned = ZonedDateTime.of(nextRun, ZoneId.systemDefault());
 
-        return TimeUnit.MILLISECONDS.toSeconds(nextRunZoned.toInstant().toEpochMilli() - nowZoned.toInstant().toEpochMilli());
+        return TimeUnit.MILLISECONDS
+                .toSeconds(nextRunZoned.toInstant().toEpochMilli() - nowZoned.toInstant().toEpochMilli());
     }
 }

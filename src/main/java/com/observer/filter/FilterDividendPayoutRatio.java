@@ -6,8 +6,6 @@ public class FilterDividendPayoutRatio extends Filter {
     public FilterDividendPayoutRatio() {
         super.query = super.getProperties().getProperty(QUERYNAME);
         super.title = "FilterTradingVolume";
-        super.description = String.format("Stocks which close increses %s%% over sma20 in top100 tradingvolume",
-                parameterArray);
     }
 
     public FilterDividendPayoutRatio(String[] parameterArray) {
@@ -21,5 +19,12 @@ public class FilterDividendPayoutRatio extends Filter {
 
     public String getQueryName() {
         return QUERYNAME;
+    }
+
+    @Override
+    public void setDescription(String[] parameterArray) {
+        super.description = String.format(
+                "Stocks which dividendPayoutRatio is between %s%% ~ %s%% and dy is %s%% over in top%s marketcap",
+                parameterArray);
     }
 }

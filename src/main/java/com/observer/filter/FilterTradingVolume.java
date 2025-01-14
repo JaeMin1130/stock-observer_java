@@ -6,8 +6,6 @@ public class FilterTradingVolume extends Filter {
     public FilterTradingVolume() {
         super.query = super.getProperties().getProperty(QUERYNAME);
         super.title = "FilterTradingVolume";
-        super.description = String.format("Stocks which close increses %s%% over sma20 in top100 tradingvolume",
-                parameterArray);
     }
 
     public FilterTradingVolume(String[] parameterArray) {
@@ -20,5 +18,11 @@ public class FilterTradingVolume extends Filter {
 
     public String getQueryName() {
         return QUERYNAME;
+    }
+
+    @Override
+    public void setDescription(String[] parameterArray) {
+        super.description = String.format("Stocks which close increses %s%% over sma20 in top100 tradingvolume",
+                parameterArray);
     }
 }
