@@ -19,7 +19,7 @@ public class FilterDividendPayoutRatio extends Filter {
                 parameterArray);
     }
 
-    public String getQueryName(){
+    public String getQueryName() {
         return QUERYNAME;
     }
 }

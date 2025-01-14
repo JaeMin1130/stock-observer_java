@@ -32,8 +32,10 @@ public class Main {
             batchJob(filterDividendPayoutRatio);
         };
 
+        long initialDelay = calculateInitialDelay(16, 30);
+        long period = TimeUnit.DAYS.toSeconds(1); 
 
-        scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.DAYS);
+        scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
 
         while (true) {
 
@@ -58,6 +60,7 @@ public class Main {
                     askParameter();
                     break;
             }
+
             stockDtoList = DBService.filterStock(selectedFilter);
             DiscordWebhookService.sendDiscordWebhookMessage(selectedFilter, stockDtoList);
         }
@@ -69,7 +72,9 @@ public class Main {
         System.out.println("\n\n");
         System.out.println("Fill all '?' with a value as you want.");
         System.out.println("Please separate each value with '/'.");
+
         selectedFilter.setParameterArray(scanner.next().split("/"));
+
         System.out.println("\n\n");
         System.out.println("Setting parameters were all finished. Filter is now ready.");
     }
@@ -77,5 +82,20 @@ public class Main {
     private static void batchJob(Filter filter) {
         stockDtoList = DBService.filterStock(filter);
         DiscordWebhookService.sendDiscordWebhookMessage(filter, stockDtoList);
+    }
+
+    private static long calculateInitialDelay(int targetHour, int targetMinute) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextRun = now.withHour(targetHour).withMinute(targetMinute).withSecond(0).withNano(0);
+
+        if (now.isAfter(nextRun)) {
+            // If the current time is after the target time, schedule for the next day
+            nextRun = nextRun.plusDays(1);
+        }
+
+        ZonedDateTime nowZoned = ZonedDateTime.of(now, ZoneId.systemDefault());
+        ZonedDateTime nextRunZoned = ZonedDateTime.of(nextRun, ZoneId.systemDefault());
+
+        return TimeUnit.MILLISECONDS.toSeconds(nextRunZoned.toInstant().toEpochMilli() - nowZoned.toInstant().toEpochMilli());
     }
 }
