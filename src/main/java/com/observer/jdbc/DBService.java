@@ -12,19 +12,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.observer.filter.Filter;
 import com.observer.stock.StockDto;
 
 public class DBService {
-    
-    private DBService() {};
 
-    public static List<StockDto> filterStock(String query, String[] parameterArray) {
+    private DBService() {
+    };
+
+    public static List<StockDto> filterStock(Filter filter) {
         System.out.printf("\nFiltering starts at %s.\n", LocalTime.now());
 
         final List<StockDto> stockDtoList = new ArrayList<>();
         try (final Connection conn = connect();
-                final PreparedStatement ps = conn.prepareStatement(query);
-                final ResultSet rs = DBUtil.readDataPrepared(conn, ps, parameterArray);) {
+                final PreparedStatement ps = conn.prepareStatement(filter.getQuery());
+                final ResultSet rs = DBUtil.readDataPrepared(conn, ps, filter.getParameterArray())) {
             while (rs.next()) {
 
                 int rsColumnCount = rs.getMetaData().getColumnCount();

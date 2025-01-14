@@ -1,28 +1,43 @@
 package com.observer;
 
-import static com.observer.util.FilePath.QUERY;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.observer.discord.DiscordWebhookService;
+import com.observer.filter.Filter;
+import com.observer.filter.FilterDividendPayoutRatio;
+import com.observer.filter.FilterTradingVolume;
 import com.observer.jdbc.DBService;
 import com.observer.stock.StockDto;
-import com.observer.util.FileReader;
 
 public class Main {
-    static String query;
-    static String[] parameterArray;
     final static Scanner scanner = new Scanner(System.in);
-    static String title;
-    static String description;
     static List<StockDto> stockDtoList;
+    static Filter selectedFilter;
 
     public static void main(String[] args) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        Runnable task = () -> {
+            Filter filterTradingVolume = new FilterTradingVolume(new String[] { "40" });
+            Filter filterDividendPayoutRatio = new FilterDividendPayoutRatio(new String[] { "25", "50", "6", "300" });
+
+            batchJob(filterTradingVolume);
+            batchJob(filterDividendPayoutRatio);
+        };
+
+
+        scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.DAYS);
 
         while (true) {
 
-            System.out.println("Choose parameters you want to use as a filter");
+            System.out.println("Choose a filter you want.");
             System.out.println("0: Exit, 1: DividendPayoutRatio and MarketCap, 2: TradingVolume and SMA20");
             final int filterNo = scanner.nextInt();
 
@@ -34,34 +49,33 @@ public class Main {
                     System.exit(0);
                 case 1:
                     System.out.println("You chose Number 1.");
-                    askParameter("query.dividendPayoutRatio");
-
-                    title = "FilterDividendPayoutRatio";
-                    description = String.format(
-                            "Stocks which dividendPayoutRatio is between %s%% ~ %s%% and dy is %s%% over in top%s marketcap",
-                            parameterArray);
+                    selectedFilter = new FilterDividendPayoutRatio();
+                    askParameter();
                     break;
                 case 2:
                     System.out.println("You chose Number 2.");
-                    askParameter("query.tradingVolume");
-
-                    title = "FilterTradingVolume";
-                    description = String.format("Stocks which close increses %s%% over sma20 in top100 tradingvolume",
-                            parameterArray);
-
+                    selectedFilter = new FilterTradingVolume();
+                    askParameter();
                     break;
             }
-            stockDtoList = DBService.filterStock(query, parameterArray);
-            DiscordWebhookService.sendDiscordWebhookMessage(title, description, stockDtoList);
+            stockDtoList = DBService.filterStock(selectedFilter);
+            DiscordWebhookService.sendDiscordWebhookMessage(selectedFilter, stockDtoList);
         }
+
     }
 
-    private static void askParameter(String queryName) {
-        query = FileReader.read(QUERY).getProperty(queryName);
-        System.out.printf("A query for filtering stock is '%s'.", query);
+    private static void askParameter() {
+        System.out.printf("A query for filtering stock is '%s'.", selectedFilter.getQuery());
         System.out.println("\n\n");
         System.out.println("Fill all '?' with a value as you want.");
-        System.out.println("Please separate each value with a '/'.");
-        parameterArray = scanner.next().split("/");
+        System.out.println("Please separate each value with '/'.");
+        selectedFilter.setParameterArray(scanner.next().split("/"));
+        System.out.println("\n\n");
+        System.out.println("Setting parameters were all finished. Filter is now ready.");
+    }
+
+    private static void batchJob(Filter filter) {
+        stockDtoList = DBService.filterStock(filter);
+        DiscordWebhookService.sendDiscordWebhookMessage(filter, stockDtoList);
     }
 }
