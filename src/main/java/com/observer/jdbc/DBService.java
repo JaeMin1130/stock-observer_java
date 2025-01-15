@@ -1,11 +1,10 @@
 package com.observer.jdbc;
 
-import static com.observer.jdbc.DBConnector.connect;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +13,10 @@ import java.util.Map;
 
 import com.observer.filter.Filter;
 import com.observer.stock.StockDto;
+import com.observer.util.FileReader;
+
+import static com.observer.jdbc.DBConnector.connect;
+import static com.observer.util.FilePath.QUERY;
 
 public class DBService {
 
@@ -57,5 +60,17 @@ public class DBService {
         System.out.printf("Filtering ends at %s.\n", LocalTime.now());
         System.out.printf("\nA number of stocks filtered is %d.\n", stockDtoList.size());
         return stockDtoList;
+    }
+
+    public static boolean upsertIndicator() {
+        System.out.printf("\nUpsert starts at %s.\n", LocalTime.now());
+
+        try (final Connection conn = connect();
+                final Statement stmt = conn.createStatement();) {
+            return stmt.execute(FileReader.read(QUERY).getProperty("query.upsert"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -25,21 +25,19 @@ public class Main {
     public static void main(String[] args) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         Runnable task = () -> {
-            Filter filterTradingVolume = new FilterTradingVolume(new String[] { "40" });
-            Filter filterDividendPayoutRatio = new FilterDividendPayoutRatio(new String[] { "25", "50", "6", "300" });
+            Filter filterDividendPayoutRatio = new FilterDividendPayoutRatio(new String[] { "25", "60", "7", "500" });
+            Filter filterTradingVolume = new FilterTradingVolume(new String[] { "40", "100"});
 
-            batchJob(filterTradingVolume);
-            batchJob(filterDividendPayoutRatio);
+            executeFilter(filterTradingVolume);
+            executeFilter(filterDividendPayoutRatio);
         };
 
-        long initialDelay = calculateInitialDelay(16, 30);
+        long initialDelay = calculateInitialDelay(10, 0);
         long period = TimeUnit.DAYS.toSeconds(1);
-
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
-
-        initialDelay = calculateInitialDelay(10, 00);
-        period = TimeUnit.DAYS.toSeconds(1);
-
+        
+        
+        initialDelay = calculateInitialDelay(16, 30);
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
 
         while (true) {
@@ -85,7 +83,10 @@ public class Main {
         return scanner.next().split("/");
     }
 
-    private static void batchJob(Filter filter) {
+    private static void executeFilter(Filter filter) {
+        if(!DBService.upsertIndicator()) return;
+
+        System.out.println("Start Filtering");
         stockDtoList = DBService.filterStock(filter);
         DiscordWebhookService.sendDiscordWebhookMessage(filter, stockDtoList);
     }
