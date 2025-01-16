@@ -39,7 +39,7 @@ public class Main {
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
         
         
-        initialDelay = calculateInitialDelay(16, 30);
+        initialDelay = calculateInitialDelay(17, 0);
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
 
         while (true) {
