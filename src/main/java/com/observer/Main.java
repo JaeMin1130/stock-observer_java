@@ -27,6 +27,8 @@ public class Main {
         Runnable task = () -> {
             Filter filterDividendPayoutRatio = new FilterDividendPayoutRatio(new String[] { "25", "60", "7", "500" });
             Filter filterTradingVolume = new FilterTradingVolume(new String[] { "40", "100"});
+            
+            DBService.upsertIndicator();
 
             executeFilter(filterTradingVolume);
             executeFilter(filterDividendPayoutRatio);
@@ -84,8 +86,6 @@ public class Main {
     }
 
     private static void executeFilter(Filter filter) {
-        if(!DBService.upsertIndicator()) return;
-
         System.out.println("Start Filtering");
         stockDtoList = DBService.filterStock(filter);
         DiscordWebhookService.sendDiscordWebhookMessage(filter, stockDtoList);
