@@ -11,8 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.observer.discord.DiscordWebhookService;
 import com.observer.filter.Filter;
-import com.observer.filter.FilterDividendPayoutRatio;
-import com.observer.filter.FilterTradingVolume;
+import com.observer.filter.FilterDividend;
+import com.observer.filter.FilterHugeDrop;
+import com.observer.filter.FilterTemp;
 import com.observer.jdbc.DBService;
 import com.observer.stock.StockDto;
 
@@ -25,27 +26,32 @@ public class Main {
     public static void main(String[] args) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         Runnable task = () -> {
-            Filter filterDividendPayoutRatio = new FilterDividendPayoutRatio(new String[] { "25", "60", "7", "500" });
-            Filter filterTradingVolume = new FilterTradingVolume(new String[] { "40", "100"});
-            
             DBService.upsertIndicator();
 
-            executeFilter(filterTradingVolume);
-            executeFilter(filterDividendPayoutRatio);
+            Filter filterDividend = new FilterDividend(new String[] { "25", "75", "5", "-3", "1", "300" });
+            executeFilter(filterDividend);
+
+            Filter filterHugeDrop = new FilterHugeDrop(new String[] { "-30", "-10", "100" });
+            executeFilter(filterHugeDrop);
+
+            Filter filterTemp = new FilterTemp(new String[] { "-8", "2", "3", "500", "2000" });
+            executeFilter(filterTemp);
+            // Filter filterTradingVolume = new FilterTradingVolume(new String[] { "40",
+            // "100"});
+            // executeFilter(filterTradingVolume);
         };
 
         long initialDelay = calculateInitialDelay(10, 0);
         long period = TimeUnit.DAYS.toSeconds(1);
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
-        
-        
-        initialDelay = calculateInitialDelay(17, 0);
+
+        initialDelay = calculateInitialDelay(17, 00);
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
 
         while (true) {
 
             System.out.println("Choose a filter you want.");
-            System.out.println("0: Exit, 1: DividendPayoutRatio and MarketCap, 2: TradingVolume and SMA20");
+            System.out.println("0: Exit, 1: Dividend, 2: Huge Drop, 3: Temp");
             final int filterNo = scanner.nextInt();
 
             switch (filterNo) {
@@ -56,14 +62,21 @@ public class Main {
                     System.exit(0);
                 case 1:
                     System.out.println("You chose Number 1.");
-                    selectedFilter = new FilterDividendPayoutRatio();
+                    selectedFilter = new FilterDividend();
                     parameterArray = askParameter();
                     selectedFilter.setParameterArray(parameterArray);
                     selectedFilter.setDescription(parameterArray);
                     break;
                 case 2:
                     System.out.println("You chose Number 2.");
-                    selectedFilter = new FilterTradingVolume();
+                    selectedFilter = new FilterHugeDrop();
+                    parameterArray = askParameter();
+                    selectedFilter.setParameterArray(parameterArray);
+                    selectedFilter.setDescription(parameterArray);
+                    break;
+                case 3:
+                    System.out.println("You chose Number 3.");
+                    selectedFilter = new FilterTemp();
                     parameterArray = askParameter();
                     selectedFilter.setParameterArray(parameterArray);
                     selectedFilter.setDescription(parameterArray);

@@ -38,7 +38,7 @@ public class DBService {
                     String columnName = rs.getMetaData().getColumnName(i);
                     if (columnName.startsWith("INDICATOR_")) {
                         indicatorMap.put(columnName.substring(columnName.indexOf("_") + 1, columnName.length()),
-                                rs.getDouble(i));
+                                rs.getDouble(columnName));
                         continue;
                     }
                 }

@@ -1,19 +1,19 @@
 package com.observer.filter;
 
-public class FilterDividendPayoutRatio extends Filter {
-    private static final String QUERYNAME = "query.dividendPayoutRatio";
+public class FilterDividend extends Filter {
+    private static final String QUERYNAME = "query.dividend";
 
-    public FilterDividendPayoutRatio() {
+    public FilterDividend() {
         super.query = super.getProperties().getProperty(QUERYNAME);
         super.title = "FilterTradingVolume";
     }
 
-    public FilterDividendPayoutRatio(String[] parameterArray) {
+    public FilterDividend(String[] parameterArray) {
         super.query = super.getProperties().getProperty(QUERYNAME);
         super.parameterArray = parameterArray;
-        super.title = "FilterDividendPayoutRatio";
+        super.title = "FilterDividend";
         super.description = String.format(
-                "Stocks which dividendPayoutRatio is between %s%% ~ %s%% and dy is %s%% over in top%s marketcap",
+                "Stocks which dividend is between %s%% ~ %s%% and dy is %s%% over in top%s marketcap",
                 parameterArray);
     }
 
@@ -24,7 +24,7 @@ public class FilterDividendPayoutRatio extends Filter {
     @Override
     public void setDescription(String[] parameterArray) {
         super.description = String.format(
-                "Stocks which dividendPayoutRatio is between %s%% ~ %s%% and dy is %s%% over in top%s marketcap",
+                "Stocks which dividend is between %s%% ~ %s%% and dy is %s%% over in top%s marketcap",
                 parameterArray);
     }
 }
