@@ -137,8 +137,8 @@ public class BackTest {
         // List<Parameter> parameterList = getParameterList(10, -5, filterHugeDrop);
 
         // Filter filterTemp = new FilterTemp(new String[] {"-10", "1", "5", "3000"});
-        Filter filterTemp = new FilterTemp(new String[] {"-8", "2", "3", "500", "2000"});
-        List<Parameter> parameterList = getParameterList(10, -5, 20, filterTemp);
+        Filter filterTemp = new FilterTemp(new String[] {"-10", "2", "3", "500", "2000"});
+        List<Parameter> parameterList = getParameterList(10, -5, 7, filterTemp);
 
         for (Parameter parameter : parameterList) {
             System.out.println(parameter);

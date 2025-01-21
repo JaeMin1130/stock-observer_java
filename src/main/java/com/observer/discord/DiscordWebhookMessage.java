@@ -1,11 +1,11 @@
 package com.observer.discord;
 
+import static com.observer.util.FilePath.DISCORD;
+
 import java.util.List;
 import java.util.Properties;
 
 import com.observer.util.FileReader;
-
-import static com.observer.util.FilePath.DISCORD;
 
 public class DiscordWebhookMessage {
   private final Properties properties = FileReader.read(DISCORD);
@@ -15,11 +15,6 @@ public class DiscordWebhookMessage {
 
   public DiscordWebhookMessage(List<Embed> embeds) {
     this.embeds = embeds;
-  }
-
-  public DiscordWebhookMessage getEmptyMessage() {
-    embeds.add(new Embed("Empty", "Empty", null));
-    return new DiscordWebhookMessage(embeds);
   }
 
   public String toJson() {
@@ -34,4 +29,6 @@ public class DiscordWebhookMessage {
     strBuilder.replace(strBuilder.length() - 1, strBuilder.length(), "]}");
     return strBuilder.toString();
   }
+
+
 }

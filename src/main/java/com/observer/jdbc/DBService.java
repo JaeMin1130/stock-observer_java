@@ -62,15 +62,16 @@ public class DBService {
         return stockDtoList;
     }
 
-    public static boolean upsertIndicator() {
+    public static void upsertIndicator() {
         System.out.printf("\nUpsert starts at %s.\n", LocalTime.now());
-
+        
         try (final Connection conn = connect();
-                final Statement stmt = conn.createStatement();) {
-            return stmt.execute(FileReader.read(QUERY).getProperty("query.upsert"));
+        final Statement stmt = conn.createStatement();) {
+            stmt.execute(FileReader.read(QUERY).getProperty("query.upsert"));
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+
+        System.out.printf("\nUpsert ends at %s.\n", LocalTime.now());
     }
 }

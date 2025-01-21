@@ -9,6 +9,8 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.observer.filter.Filter;
 import com.observer.stock.StockDto;
@@ -18,11 +20,11 @@ public class DiscordWebhookService {
     private DiscordWebhookService() {
     };
 
-    public static void sendDiscordWebhookMessage(Filter filter, List<StockDto> stockDtoList) {
+    public static void sendDiscordWebhookMessage(Map<Filter, List<StockDto>> resultMap) {
 
         final HttpClient client = HttpClient.newHttpClient();
         final String webhookUrl = FileReader.read(DISCORD).getProperty("discord.url");
-        final DiscordWebhookMessage message = DiscordWebhookService.createDiscordWebhookMessage(filter, stockDtoList);
+        final DiscordWebhookMessage message = createDiscordWebhookMessage(resultMap);
 
         final HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(webhookUrl))
@@ -38,19 +40,22 @@ public class DiscordWebhookService {
         }
     }
 
-    private static DiscordWebhookMessage createDiscordWebhookMessage(Filter filter,
-            List<StockDto> stockDtoList) {
-
-        List<Field> fields = new ArrayList<>();
-        for (StockDto stockDto : stockDtoList) {
-            // 오늘 날짜가 아니면 스킵
-            if(stockDto.getDate() != LocalDate.now()) continue;
-            fields.add(stockDto.toField());
-        }
-
+    private static DiscordWebhookMessage createDiscordWebhookMessage(Map<Filter, List<StockDto>> resultMap) {
         List<Embed> embeds = new ArrayList<>();
-        Embed embed1 = new Embed(filter.getTitle(), filter.getDescription(), fields);
-        embeds.add(embed1);
+        
+        for(Entry<Filter, List<StockDto>> entry : resultMap.entrySet()){
+            Filter filter = entry.getKey();
+            List<StockDto> stockDtoList = entry.getValue();   
+            List<Field> fields = new ArrayList<>();
+
+            for (StockDto stockDto : stockDtoList) {
+                // 오늘 날짜가 아니면 스킵
+                if(!stockDto.getDate().equals(LocalDate.now())) continue;
+                fields.add(stockDto.toField());
+            }
+
+            embeds.add(new Embed(filter.getTitle(), filter.getDescription(), fields));
+        }
 
         return new DiscordWebhookMessage(embeds);
     }

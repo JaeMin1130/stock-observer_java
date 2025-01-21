@@ -3,7 +3,9 @@ package com.observer;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,79 +28,27 @@ public class Main {
     public static void main(String[] args) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         Runnable task = () -> {
+            System.out.println("Task starts");
             DBService.upsertIndicator();
 
             Filter filterDividend = new FilterDividend(new String[] { "25", "75", "5", "-3", "300" });
-            executeFilter(filterDividend);
-
-            Filter filterHugeDrop = new FilterHugeDrop(new String[] { "-30", "-10", "100" });
-            executeFilter(filterHugeDrop);
-
+            Filter filterHugeDrop = new FilterHugeDrop(new String[] { "-10", "300" });
             Filter filterTemp = new FilterTemp(new String[] { "-8", "2", "3", "500", "2000" });
-            executeFilter(filterTemp);
+
+            Map<Filter, List<StockDto>> resultMap = new LinkedHashMap<>();
+            resultMap.put(filterDividend, DBService.filterStock(filterDividend));
+            resultMap.put(filterHugeDrop, DBService.filterStock(filterHugeDrop));
+            resultMap.put(filterTemp, DBService.filterStock(filterTemp));
+
+            DiscordWebhookService.sendDiscordWebhookMessage(resultMap);
         };
 
         long initialDelay = calculateInitialDelay(10, 0);
         long period = TimeUnit.DAYS.toSeconds(1);
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
 
-        initialDelay = calculateInitialDelay(17, 00);
+        initialDelay = calculateInitialDelay(15, 31);
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
-
-        while (true) {
-
-            System.out.println("Choose a filter you want.");
-            System.out.println("0: Exit, 1: Dividend, 2: Huge Drop, 3: Temp");
-            final int filterNo = scanner.nextInt();
-
-            switch (filterNo) {
-                case 0:
-                    System.out.println("You chose Number 0.");
-                    System.out.println("The program is terminated.");
-                    scanner.close();
-                    System.exit(0);
-                case 1:
-                    System.out.println("You chose Number 1.");
-                    selectedFilter = new FilterDividend();
-                    parameterArray = askParameter();
-                    selectedFilter.setParameterArray(parameterArray);
-                    selectedFilter.setDescription(parameterArray);
-                    break;
-                case 2:
-                    System.out.println("You chose Number 2.");
-                    selectedFilter = new FilterHugeDrop();
-                    parameterArray = askParameter();
-                    selectedFilter.setParameterArray(parameterArray);
-                    selectedFilter.setDescription(parameterArray);
-                    break;
-                case 3:
-                    System.out.println("You chose Number 3.");
-                    selectedFilter = new FilterTemp();
-                    parameterArray = askParameter();
-                    selectedFilter.setParameterArray(parameterArray);
-                    selectedFilter.setDescription(parameterArray);
-                    break;
-            }
-
-            stockDtoList = DBService.filterStock(selectedFilter);
-            DiscordWebhookService.sendDiscordWebhookMessage(selectedFilter, stockDtoList);
-        }
-
-    }
-
-    private static String[] askParameter() {
-        System.out.printf("A query for filtering stock is '%s'.", selectedFilter.getQuery());
-        System.out.println("\n\n");
-        System.out.println("Fill all '?' in order with a value as you want.");
-        System.out.println("Please separate each value with '/'.");
-
-        return scanner.next().split("/");
-    }
-
-    private static void executeFilter(Filter filter) {
-        System.out.println("Start Filtering");
-        stockDtoList = DBService.filterStock(filter);
-        DiscordWebhookService.sendDiscordWebhookMessage(filter, stockDtoList);
     }
 
     private static long calculateInitialDelay(int targetHour, int targetMinute) {
