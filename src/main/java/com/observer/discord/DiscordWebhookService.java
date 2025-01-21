@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +40,11 @@ public class DiscordWebhookService {
 
     private static DiscordWebhookMessage createDiscordWebhookMessage(Filter filter,
             List<StockDto> stockDtoList) {
+
         List<Field> fields = new ArrayList<>();
         for (StockDto stockDto : stockDtoList) {
+            // 오늘 날짜가 아니면 스킵
+            if(stockDto.getDate() != LocalDate.now()) continue;
             fields.add(stockDto.toField());
         }
 
@@ -48,8 +52,6 @@ public class DiscordWebhookService {
         Embed embed1 = new Embed(filter.getTitle(), filter.getDescription(), fields);
         embeds.add(embed1);
 
-        DiscordWebhookMessage message = new DiscordWebhookMessage(embeds);
-
-        return message;
+        return new DiscordWebhookMessage(embeds);
     }
 }

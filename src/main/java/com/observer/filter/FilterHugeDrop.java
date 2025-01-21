@@ -24,7 +24,7 @@ public class FilterHugeDrop extends Filter {
     @Override
     public void setDescription(String[] parameterArray) {
         super.description = String.format(
-                "Stocks which dividend is between %s%% ~ %s%% in top%s marketcap",
+                "Stocks which rate of change is between %s%% ~ %s%% in top%s marketcap",
                 parameterArray);
     }
 }

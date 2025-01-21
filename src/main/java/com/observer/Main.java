@@ -28,7 +28,7 @@ public class Main {
         Runnable task = () -> {
             DBService.upsertIndicator();
 
-            Filter filterDividend = new FilterDividend(new String[] { "25", "75", "5", "-3", "1", "300" });
+            Filter filterDividend = new FilterDividend(new String[] { "25", "75", "5", "-3", "300" });
             executeFilter(filterDividend);
 
             Filter filterHugeDrop = new FilterHugeDrop(new String[] { "-30", "-10", "100" });
@@ -36,9 +36,6 @@ public class Main {
 
             Filter filterTemp = new FilterTemp(new String[] { "-8", "2", "3", "500", "2000" });
             executeFilter(filterTemp);
-            // Filter filterTradingVolume = new FilterTradingVolume(new String[] { "40",
-            // "100"});
-            // executeFilter(filterTradingVolume);
         };
 
         long initialDelay = calculateInitialDelay(10, 0);

@@ -17,14 +17,24 @@ public class Embed {
     this.fields = fields;
   }
 
+  public List<Field> getFields() {
+    return this.fields;
+  }
+
   public String toJson() {
     StringBuilder strBuilder = new StringBuilder();
     strBuilder.append(String.format("{\"title\":\"%s\", \"description\":\"%s\", \"color\":%s, \"fields\":[", title,
         description, color));
-    for (Field field : fields) {
-      strBuilder.append(field.toJson());
+
+    if (!fields.isEmpty()) {
+      for (Field field : fields) {
+        strBuilder.append(field.toJson());
+      }
+      strBuilder.replace(strBuilder.length() - 1, strBuilder.length(), "]},");
+    } else {
+      strBuilder.append("{\"name\": \"Empty\", \"value\": \"There are no stocks that match the filter for today.\"}]},");
     }
-    strBuilder.replace(strBuilder.length() - 1, strBuilder.length(), "]},");
+
     return strBuilder.toString();
   }
 }
