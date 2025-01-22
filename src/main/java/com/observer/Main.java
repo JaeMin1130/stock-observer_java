@@ -27,15 +27,16 @@ public class Main {
 
     public static void main(String[] args) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        Filter filterDividend = new FilterDividend(new String[] { "20", "75", "5", "-5", "300" });
+        Filter filterHugeDrop = new FilterHugeDrop(new String[] { "-10", "300" });
+        Filter filterTemp = new FilterTemp(new String[] {"-10", "3", "5", "500", "2000"});
+        Map<Filter, List<StockDto>> resultMap = new LinkedHashMap<>();
+        
         Runnable task = () -> {
             System.out.println("Task starts");
             DBService.upsertIndicator();
 
-            Filter filterDividend = new FilterDividend(new String[] { "25", "75", "5", "-3", "300" });
-            Filter filterHugeDrop = new FilterHugeDrop(new String[] { "-10", "300" });
-            Filter filterTemp = new FilterTemp(new String[] { "-8", "2", "3", "500", "2000" });
-
-            Map<Filter, List<StockDto>> resultMap = new LinkedHashMap<>();
             resultMap.put(filterDividend, DBService.filterStock(filterDividend));
             resultMap.put(filterHugeDrop, DBService.filterStock(filterHugeDrop));
             resultMap.put(filterTemp, DBService.filterStock(filterTemp));
@@ -47,7 +48,7 @@ public class Main {
         long period = TimeUnit.DAYS.toSeconds(1);
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
 
-        initialDelay = calculateInitialDelay(15, 31);
+        initialDelay = calculateInitialDelay(16, 30);
         scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
     }
 
