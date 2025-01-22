@@ -2,15 +2,11 @@ package com.observer.filter;
 
 public class FilterHugeDrop extends Filter {
     private static final String QUERYNAME = "query.hugedrop";
+    private static final String PARAMETERNAME = "query.hugedrop.parameter";
 
     public FilterHugeDrop() {
         super.query = super.getProperties().getProperty(QUERYNAME);
-        super.title = "FilterHugeDrop";
-    }
-
-    public FilterHugeDrop(String[] parameterArray) {
-        super.query = super.getProperties().getProperty(QUERYNAME);
-        super.parameterArray = parameterArray;
+        super.parameterArray = super.getProperties().getProperty(PARAMETERNAME).split(", ");
         super.title = "FilterHugeDrop";
         super.description = String.format(
                 "Stocks which rate of change is %s%% under in top%s marketcap",
@@ -21,10 +17,7 @@ public class FilterHugeDrop extends Filter {
         return QUERYNAME;
     }
 
-    @Override
-    public void setDescription(String[] parameterArray) {
-        super.description = String.format(
-                "Stocks which rate of change is %s%% under in top%s marketcap",
-                parameterArray);
+    public String getParameterName() {
+        return QUERYNAME;
     }
 }
