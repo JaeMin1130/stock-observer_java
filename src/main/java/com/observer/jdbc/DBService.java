@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.observer.file.FileReader;
 import com.observer.filter.Filter;
 import com.observer.stock.StockDto;
-import com.observer.util.FileReader;
 
+import static com.observer.file.FilePath.QUERY;
 import static com.observer.jdbc.DBConnector.connect;
-import static com.observer.util.FilePath.QUERY;
 
 public class DBService {
 

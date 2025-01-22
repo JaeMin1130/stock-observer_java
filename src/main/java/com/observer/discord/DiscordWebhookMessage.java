@@ -1,11 +1,11 @@
 package com.observer.discord;
 
-import static com.observer.util.FilePath.DISCORD;
+import static com.observer.file.FilePath.DISCORD;
 
 import java.util.List;
 import java.util.Properties;
 
-import com.observer.util.FileReader;
+import com.observer.file.FileReader;
 
 public class DiscordWebhookMessage {
   private final Properties properties = FileReader.read(DISCORD);

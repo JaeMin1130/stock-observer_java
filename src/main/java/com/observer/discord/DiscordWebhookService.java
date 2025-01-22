@@ -1,6 +1,6 @@
 package com.observer.discord;
 
-import static com.observer.util.FilePath.DISCORD;
+import static com.observer.file.FilePath.DISCORD;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.observer.file.FileReader;
 import com.observer.filter.Filter;
 import com.observer.stock.StockDto;
-import com.observer.util.FileReader;
 
 public class DiscordWebhookService {
     private DiscordWebhookService() {

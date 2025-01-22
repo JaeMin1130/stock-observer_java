@@ -1,10 +1,10 @@
 package com.observer.filter;
 
-import static com.observer.util.FilePath.QUERY;
+import static com.observer.file.FilePath.QUERY;
 
 import java.util.Properties;
 
-import com.observer.util.FileReader;
+import com.observer.file.FileReader;
 
 public class Filter {
     private static final Properties properties = FileReader.read(QUERY);

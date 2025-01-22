@@ -1,9 +1,10 @@
 package com.observer.discord;
 
+import static com.observer.file.FilePath.DISCORD;
+
 import java.util.List;
 
-import com.observer.util.FileReader;
-import static com.observer.util.FilePath.DISCORD;
+import com.observer.file.FileReader;
 
 public class Embed {
   private String title;

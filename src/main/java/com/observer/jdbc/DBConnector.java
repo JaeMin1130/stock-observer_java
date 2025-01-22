@@ -1,12 +1,13 @@
 package com.observer.jdbc;
 
+import static com.observer.file.FilePath.JDBC;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.observer.util.FileReader;
-import static com.observer.util.FilePath.JDBC;
+import com.observer.file.FileReader;
 
 public class DBConnector {
     private static final Properties properties = FileReader.read(JDBC);

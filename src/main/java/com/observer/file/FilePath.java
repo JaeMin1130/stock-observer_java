@@ -1,4 +1,4 @@
-package com.observer.util;
+package com.observer.file;
 
 public class FilePath {
     public final static String JDBC = "src/main/resources/db.properties";

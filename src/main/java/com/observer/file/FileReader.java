@@ -1,4 +1,4 @@
-package com.observer.util;
+package com.observer.file;
 
 import java.io.FileInputStream;
 import java.io.IOException;
