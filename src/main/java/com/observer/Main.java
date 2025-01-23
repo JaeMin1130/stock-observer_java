@@ -35,6 +35,7 @@ public class Main {
         
         Runnable task = () -> {
             System.out.printf("A scheduled task starts at %s\n", LocalDateTime.now());
+            
             DBService.upsertIndicator();
             
             resultMap.put(filterDividend, DBService.filterStock(filterDividend));
@@ -42,13 +43,14 @@ public class Main {
             resultMap.put(filterTemp, DBService.filterStock(filterTemp));
             
             DiscordWebhookService.sendDiscordWebhookMessage(resultMap);
+
             System.out.printf("A scheduled task ends at %s\n", LocalDateTime.now());
         };
 
         try{
+            System.out.println(LocalDateTime.now());
             System.out.println("Test sending starts\n");
             scheduler.schedule(task, 0, TimeUnit.SECONDS);
-            System.out.println("Test sending finished\n");
     
             long initialDelay = calculateInitialDelay(10, 0);
             long period = TimeUnit.DAYS.toSeconds(1);
@@ -62,12 +64,12 @@ public class Main {
         
     }
 
+    // 지정 시간과 현재 시간의 차이(초 단위)
     private static long calculateInitialDelay(int targetHour, int targetMinute) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextRun = now.withHour(targetHour).withMinute(targetMinute).withSecond(0).withNano(0);
 
         if (now.isAfter(nextRun)) {
-            // If the current time is after the target time, schedule for the next day
             nextRun = nextRun.plusDays(1);
         }
 
