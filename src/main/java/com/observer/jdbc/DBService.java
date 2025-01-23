@@ -1,5 +1,8 @@
 package com.observer.jdbc;
 
+import static com.observer.file.FilePath.QUERY;
+import static com.observer.jdbc.DBConnector.connect;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,16 +10,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.observer.file.FileReader;
 import com.observer.filter.Filter;
 import com.observer.stock.StockDto;
-
-import static com.observer.file.FilePath.QUERY;
-import static com.observer.jdbc.DBConnector.connect;
 
 public class DBService {
 
@@ -33,7 +33,7 @@ public class DBService {
             while (rs.next()) {
 
                 int rsColumnCount = rs.getMetaData().getColumnCount();
-                Map<String, Double> indicatorMap = new HashMap<>();
+                Map<String, Double> indicatorMap = new LinkedHashMap<>();
                 for (int i = 1; i <= rsColumnCount; i++) {
                     String columnName = rs.getMetaData().getColumnName(i);
                     if (columnName.startsWith("INDICATOR_")) {

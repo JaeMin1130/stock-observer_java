@@ -100,7 +100,7 @@ public class StockDto {
     public Field toField() {
         return new Field(companyName,
                 String.format(
-                        "close: %,d\\n capRank: %s\\n tradingVolume: %,d\\n date: %s\\n indicators: %s\\n",
+                        "close: %,d\\n capRank: %,d\\n tradingVolume: %,d\\n date: %s\\n indicators: %s\\n",
                         close, capRank, tradingVolume, date, indicatorMap.toString()));
     }
 }
