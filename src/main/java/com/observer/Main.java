@@ -15,7 +15,8 @@ import com.observer.discord.DiscordWebhookService;
 import com.observer.filter.Filter;
 import com.observer.filter.FilterDividend;
 import com.observer.filter.FilterHugeDrop;
-import com.observer.filter.FilterTemp;
+import com.observer.filter.FilterValue;
+import com.observer.filter.FilterWild;
 import com.observer.jdbc.DBService;
 import com.observer.stock.StockDto;
 
@@ -30,38 +31,43 @@ public class Main {
 
         Filter filterDividend = new FilterDividend();
         Filter filterHugeDrop = new FilterHugeDrop();
-        Filter filterTemp = new FilterTemp();
+        Filter filterValue = new FilterValue();
+        Filter filterWild = new FilterWild();
         Map<Filter, List<StockDto>> resultMap = new LinkedHashMap<>();
-        
+
         Runnable task = () -> {
             System.out.printf("A scheduled task starts at %s\n", LocalDateTime.now());
-            
+
             DBService.upsertIndicator();
-            
+
             resultMap.put(filterDividend, DBService.filterStock(filterDividend));
             resultMap.put(filterHugeDrop, DBService.filterStock(filterHugeDrop));
-            resultMap.put(filterTemp, DBService.filterStock(filterTemp));
-            
+            resultMap.put(filterValue, DBService.filterStock(filterValue));
+            resultMap.put(filterWild, DBService.filterStock(filterWild));
+
             DiscordWebhookService.sendDiscordWebhookMessage(resultMap);
 
             System.out.printf("A scheduled task ends at %s\n", LocalDateTime.now());
         };
 
-        try{
-            System.out.println(LocalDateTime.now());
-            System.out.println("Test sending starts\n");
-            scheduler.schedule(task, 0, TimeUnit.SECONDS);
-    
-            long initialDelay = calculateInitialDelay(10, 0);
+        try {
+            System.out.println("Send a sample message for a test\n");
+            scheduler.schedule(() -> {
+                DiscordWebhookService.sendTestMessage();
+            }, 0, TimeUnit.SECONDS);
+
+            // scheduler.scheduleAtFixedRate(task, 0, 1000000, TimeUnit.SECONDS);
+
             long period = TimeUnit.DAYS.toSeconds(1);
+            long initialDelay = calculateInitialDelay(10, 0);
             scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
-    
+
             initialDelay = calculateInitialDelay(16, 30);
             scheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
 
     // 지정 시간과 현재 시간의 차이(초 단위)

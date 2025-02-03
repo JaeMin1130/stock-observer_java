@@ -14,7 +14,7 @@ public class DBUtil {
         try {
             final int parameterCount = ps.getParameterMetaData().getParameterCount();
             for(int i = 1; i <= parameterCount; i++){
-                ps.setInt(i, Integer.parseInt(parameterArray[i-1]));
+                ps.setLong(i, Long.parseLong(parameterArray[i-1]));
             }
             final ResultSet rs = ps.executeQuery();
 

@@ -8,19 +8,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.observer.filter.Filter;
-import com.observer.filter.FilterTemp;
+import com.observer.filter.FilterWild;
 import com.observer.jdbc.DBUtil;
 
 public class BackTest {
     public static List<Parameter> getParameterList(int maxProfitCut, int maxLossCut, int day, Filter filter) {
 
-        Map<Stock, List<Integer>> totalStockCloseMap = new HashMap<>();
+        Map<Stock, List<Integer>> totalStockCloseMap = new LinkedHashMap<>();
         List<Parameter> parameterList = new ArrayList<>();
 
         try (final Connection conn = connect();
@@ -100,7 +100,7 @@ public class BackTest {
             return;
         }
 
-        Map<String, List<Result>> resultMap = new HashMap<>();
+        Map<String, List<Result>> resultMap = new LinkedHashMap<>();
         for (Result result : bestParameter.resultList) {
             resultMap.computeIfAbsent(result.resultType, k -> new ArrayList<>()).add(result);
         }
@@ -129,22 +129,15 @@ public class BackTest {
     }
 
     public static void main(String[] args) {
-        // Filter filterDividend = new FilterDividend(new String[] { "25", "75", "5",
-        // "-3", "1", "300" });
-        // List<Parameter> parameterList = getParameterList(10, -5, filterDividend);
 
-        // Filter filterHugeDrop = new FilterHugeDrop(new String[] { "-30", "-10", "100" });
-        // List<Parameter> parameterList = getParameterList(10, -5, filterHugeDrop);
-
-        // Filter filterTemp = new FilterTemp(new String[] {"-10", "1", "5", "3000"});
-        Filter filterTemp = new FilterTemp();
-        List<Parameter> parameterList = getParameterList(10, -5, 7, filterTemp);
+        Filter filterWild = new FilterWild();
+        List<Parameter> parameterList = getParameterList(10, -5, 7, filterWild);
 
         for (Parameter parameter : parameterList) {
             System.out.println(parameter);
         }
 
-        Parameter bestParameter = new Parameter(0, 0, 0, null);
+        var bestParameter = new Parameter(0, 0, 0, null);
         int maxTotalIncome = parameterList.get(0).totalIncome;
         for (Parameter curParameter : parameterList) {
             int curTotalIncome = curParameter.totalIncome;

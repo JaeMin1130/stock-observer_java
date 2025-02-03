@@ -9,7 +9,7 @@ public class FilterDividend extends Filter {
         super.parameterArray = super.getProperties().getProperty(PARAMETERNAME).split(", ");
         super.title = "FilterDividend";
         super.description = String.format(
-                "Stocks which dividend is between %s%% ~ %s%% and dy is %s%% rate of change is %s%% under over in top%s marketcap",
+                "Stocks which dividend is between %s%% ~ %s%% and dy is more than %s%% and rate of change is less than %s%% in top %s marketcap.",
                 parameterArray);
     }
 

@@ -1,15 +1,15 @@
 package com.observer.filter;
 
-public class FilterTemp extends Filter {
-    private static final String QUERYNAME = "query.temp";
-    private static final String PARAMETERNAME = "query.temp.parameter";
+public class FilterValue extends Filter {
+    private static final String QUERYNAME = "query.value";
+    private static final String PARAMETERNAME = "query.value.parameter";
 
-    public FilterTemp() {
+    public FilterValue() {
         super.query = super.getProperties().getProperty(QUERYNAME);
         super.parameterArray = super.getProperties().getProperty(PARAMETERNAME).split(", ");
-        super.title = "FilterTemp";
+        super.title = "FilterValue";
         super.description = String.format(
-                "Stocks which rate of change is %s%% under and pbr is %s%% under and per is %s%% under and caprank is between %s and %s",
+                "Stocks which rate of change is less than %s%% and per is less than %s%% and pbr is less than %s%% in top %s marketcap.",
                 parameterArray);
     }
 

@@ -1,15 +1,15 @@
 package com.observer.filter;
 
-public class FilterHugeDrop extends Filter {
-    private static final String QUERYNAME = "query.hugedrop";
-    private static final String PARAMETERNAME = "query.hugedrop.parameter";
+public class FilterWild extends Filter {
+    private static final String QUERYNAME = "query.wild";
+    private static final String PARAMETERNAME = "query.wild.parameter";
 
-    public FilterHugeDrop() {
+    public FilterWild() {
         super.query = super.getProperties().getProperty(QUERYNAME);
         super.parameterArray = super.getProperties().getProperty(PARAMETERNAME).split(", ");
-        super.title = "FilterHugeDrop";
+        super.title = "FilterWild";
         super.description = String.format(
-                "Stocks which rate of change is less than %s%% in top %s marketcap.",
+                "Stocks which closing price above the SMA20 is more than %s%% and the trading value is more than %s.",
                 parameterArray);
     }
 
