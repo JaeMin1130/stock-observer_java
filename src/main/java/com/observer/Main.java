@@ -38,8 +38,6 @@ public class Main {
         Runnable task = () -> {
             System.out.printf("A scheduled task starts at %s\n", LocalDateTime.now());
 
-            DBService.upsertIndicator();
-
             resultMap.put(filterDividend, DBService.filterStock(filterDividend));
             resultMap.put(filterHugeDrop, DBService.filterStock(filterHugeDrop));
             resultMap.put(filterValue, DBService.filterStock(filterValue));
