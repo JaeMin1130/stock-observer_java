@@ -15,6 +15,7 @@ import com.observer.discord.DiscordWebhookService;
 import com.observer.filter.Filter;
 import com.observer.filter.FilterDividend;
 import com.observer.filter.FilterHugeDrop;
+import com.observer.filter.FilterMomentum;
 import com.observer.filter.FilterValue;
 import com.observer.filter.FilterWild;
 import com.observer.jdbc.DBService;
@@ -32,6 +33,7 @@ public class Main {
         Filter filterDividend = new FilterDividend();
         Filter filterHugeDrop = new FilterHugeDrop();
         Filter filterValue = new FilterValue();
+        Filter filterMomentum = new FilterMomentum();
         Filter filterWild = new FilterWild();
         Map<Filter, List<StockDto>> resultMap = new LinkedHashMap<>();
 
@@ -41,6 +43,7 @@ public class Main {
             resultMap.put(filterDividend, DBService.filterStock(filterDividend));
             resultMap.put(filterHugeDrop, DBService.filterStock(filterHugeDrop));
             resultMap.put(filterValue, DBService.filterStock(filterValue));
+            resultMap.put(filterMomentum, DBService.filterStock(filterMomentum));
             resultMap.put(filterWild, DBService.filterStock(filterWild));
 
             DiscordWebhookService.sendDiscordWebhookMessage(resultMap);
@@ -54,7 +57,7 @@ public class Main {
                 DiscordWebhookService.sendTestMessage();
             }, 0, TimeUnit.SECONDS);
 
-            // scheduler.scheduleAtFixedRate(task, 0, 1000000, TimeUnit.SECONDS);
+            scheduler.scheduleAtFixedRate(task, 0, 1000000, TimeUnit.SECONDS);
 
             long period = TimeUnit.DAYS.toSeconds(1);
             long initialDelay = calculateInitialDelay(10, 0);

@@ -21,7 +21,7 @@ public class DBService {
     };
 
     public static List<StockDto> filterStock(Filter filter) {
-        System.out.printf("\nFiltering starts at %s.\n", LocalTime.now());
+        System.out.printf("\n%s starts at %s.\n", filter.getTitle(), LocalTime.now());
 
         final List<StockDto> stockDtoList = new ArrayList<>();
         try (final Connection conn = connect();

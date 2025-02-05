@@ -38,21 +38,21 @@ public class BackTest {
             for (Stock stock : stockList) {
                 List<Integer> individualStockCloseList = new ArrayList<>();
                 String query = String.format(
-                        "SELECT close FROM stock WHERE date > '%s' and date <= DATEADD('DAY', %d, DATE '%s') and companyname = '%s' order by date",
+                        "SELECT close FROM stock WHERE date >= '%s' and date <= DATEADD('DAY', %d, DATE '%s') and companyname = '%s' order by date",
                         stock.date, day, stock.date, stock.companyName);
                 final ResultSet stockCloseSet = stmt.executeQuery(query);
                 while (stockCloseSet.next()) {
                     individualStockCloseList.add(stockCloseSet.getInt("CLOSE"));
                 }
 
-                if (individualStockCloseList.size() == 0) continue;
+                if (individualStockCloseList.size() == 0)
+                    continue;
 
                 totalStockCloseMap.put(stock, individualStockCloseList);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }   
-
+        }
 
         for (int profitCut = 1; profitCut <= maxProfitCut; profitCut++) {
             for (int lossCut = maxLossCut; lossCut < 0; lossCut++) {
@@ -115,33 +115,43 @@ public class BackTest {
             }
         }
 
-        System.out.println("\n");
+        System.out.println();
         System.out.println("The best performed parameter is " + bestParameter);
+        System.out.println();
+        
         System.out.println("A total number of stocks: " + bestParameter.resultList.size());
         System.out.println("A number of stocks which return a Profit: " + resultMap.get("Profit").size());
+        System.out.printf("Total Profit: %,d\n",
+        bestParameter.resultList.stream().filter(r -> r.resultType.equals("Profit")).mapToInt(r -> r.income)
+        .sum());
         System.out.println("A number of stocks which return a Loss: " + resultMap.get("Loss").size());
+        System.out.printf("Total Loss: %,d\n",
+        bestParameter.resultList.stream().filter(r -> r.resultType.equals("Loss")).mapToInt(r -> r.income)
+        .sum());
+        
+        System.out.println();
         System.out.printf("Total Buying Price: %,d\n",
                 bestParameter.resultList.stream().mapToInt(r -> r.buyPrice).sum());
         System.out.printf("Total Selling Price: %,d\n",
                 bestParameter.resultList.stream().mapToInt(r -> r.sellPrice).sum());
         System.out.printf("Total Income: %,d\n", bestParameter.totalIncome);
-        System.out.println("\n");
+        System.out.println();
     }
 
     public static void main(String[] args) {
 
         Filter filterWild = new FilterWild();
-        List<Parameter> parameterList = getParameterList(10, -5, 7, filterWild);
+        List<Parameter> parameterList = getParameterList(15, -5, 10, filterWild);
 
         for (Parameter parameter : parameterList) {
             System.out.println(parameter);
         }
 
         var bestParameter = new Parameter(0, 0, 0, null);
-        int maxTotalIncome = parameterList.get(0).totalIncome;
+        int maxTotalIncome = 0;
         for (Parameter curParameter : parameterList) {
             int curTotalIncome = curParameter.totalIncome;
-            if (maxTotalIncome < curTotalIncome){
+            if (maxTotalIncome < curTotalIncome) {
                 bestParameter = curParameter;
                 maxTotalIncome = curTotalIncome;
             }

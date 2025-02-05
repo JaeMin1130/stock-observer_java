@@ -1,15 +1,15 @@
 package com.observer.filter;
 
-public class FilterWild extends Filter {
-    private static final String QUERYNAME = "query.wild";
-    private static final String PARAMETERNAME = "query.wild.parameter";
+public class FilterMomentum extends Filter {
+    private static final String QUERYNAME = "query.momentum";
+    private static final String PARAMETERNAME = "query.momentum.parameter";
 
-    public FilterWild() {
+    public FilterMomentum() {
         super.query = super.getProperties().getProperty(QUERYNAME);
         super.parameterArray = super.getProperties().getProperty(PARAMETERNAME).split(", ");
-        super.title = "FilterWild";
+        super.title = "FilterMomentum";
         super.description = String.format(
-                "Stocks which min_rsi changes in top %s marketcap.",
+                "Stocks which closing price above the SMA20 is more than %s%% and the trading value is more than %s.",
                 parameterArray);
     }
 
